@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             Int      @id @default(autoincrement())
+  nickname       String   @unique
+  deviceUuid     String   @unique
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  reports        LocationReport[]
+}
+
+model Beacon {
+  id        Int      @id @default(autoincrement())
+  uuid      String
+  major     String
+  minor     String
+  alias     String
+  createdAt DateTime @default(now())
+
+  @@unique([uuid, major, minor])
+}
+
+model LocationReport {
+  id          Int      @id @default(autoincrement())
+  nickname    String
+  user        User     @relation(fields: [nickname], references: [nickname])
+  beaconUuid  String
+  beaconMajor String
+  beaconMinor String
+  timestamp   String   // Original timestamp from app "2025:12:01-14:30:00"
+  createdAt   DateTime @default(now())
+
+  // Link to API Log
+  apiLog      ApiLog?  @relation(fields: [apiLogId], references: [id])
+  apiLogId    Int?     @unique
+}
+
+model ApiLog {
+  id              Int      @id @default(autoincrement())
+  method          String
+  url             String
+  requestHeaders  String   // JSON string
+  requestBody     String   // JSON string
+  responseStatus  Int
+  responseHeaders String   // JSON string
+  responseBody    String   // JSON string
+  createdAt       DateTime @default(now())
+
+  report          LocationReport?
+}
