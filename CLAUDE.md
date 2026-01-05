@@ -27,6 +27,9 @@
 - **Runtime**: TypeScript (CommonJS/ESM 혼합 주의, 현재 `tsx` 사용 중)
 - **Database**: SQLite (Prisma v5.22.0). `ApiLog` 모델을 통해 모든 통신 로그를 저장합니다.
 - **Real-time**: `socket.io`를 사용하며, 성능 최적화를 위해 **Silent Refresh** (1페이지 한정) 전략을 사용합니다.
+    - `update_users`: 전체 사용자 리스트 갱신 (신규 가입, 위치 보고 공통)
+    - `update_history_{nickname}`: 특정 사용자의 히스토리 Timeline 갱신
+- **Mobile Client**: `NetworkService`는 `MiroIT-iBeacon` User-Agent를 사용하여 요청을 보냅니다.
 - **Pagination**: 날짜별 조회를 지원하며(Date-based Navigation), 특정 날짜 선택 시 해당일의 모든 데이터를 제한 없이 보여줍니다.
 - **Endpoints**: 
     - `GET /api/admin/locations/:nickname/dates`: 사용자의 전체 기록 중 날짜 목록 조회
@@ -55,6 +58,12 @@
 ### Docker
 - `docker-compose up`: 전체 스택 실행
 - `docker build -t [image-name] .`: 이미지 빌드
+
+## 🚧 향후 개선 과제
+- **DB Migration**: SQLite에서 AWS RDS(PostgreSQL) 전환.
+- **Auth**: Admin 대시보드 접근 제어 (JWT/Session).
+- **Dashboard Charts**: 사용자 방문 빈도 시각화 (Recharts).
+- **API Documentation**: Swagger/OpenAPI 사양서 자동 생성.
 
 ## 💡 개발 팁
 - 실시간 업데이트 확인 시 `curl`을 통해 `/api/locations/report`에 POST 요청을 보내면 대시보드 화면이 즉시 갱신되는지 확인할 수 있습니다.

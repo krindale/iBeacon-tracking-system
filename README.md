@@ -31,7 +31,7 @@
 ### Backend
 - **Runtime**: Node.js (TypeScript)
 - **Framework**: Express
-- **Database**: SQLite (local)
+- **DB**: PostgreSQL (Relational Database)
 - **ORM**: Prisma
 - **Real-time**: Socket.io
 

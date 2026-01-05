@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:4000/api';
+const API_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api`;
 
 export interface UserStatus {
     nickname: string;
@@ -54,11 +54,11 @@ export interface ApiLog {
     id: number;
     method: string;
     url: string;
-    requestHeaders: any;
-    requestBody: any;
+    requestHeaders: Record<string, string>;
+    requestBody: unknown;
     responseStatus: number;
-    responseHeaders: any;
-    responseBody: any;
+    responseHeaders: Record<string, string>;
+    responseBody: unknown;
     createdAt: string;
 }
 

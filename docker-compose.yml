@@ -4,10 +4,24 @@ services:
     ports:
       - "4000:4000"
     volumes:
-      - ./backend/data:/app/prisma
+      - ./backend/data:/app/data
     environment:
-      - DATABASE_URL=file:/app/prisma/dev.db
+      - DATABASE_URL=postgresql://ibeacon:password@db:5432/ibeacon_db
       - PORT=4000
+    depends_on:
+      - db
+    restart: always
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=ibeacon
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=ibeacon_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     restart: always
 
   frontend:
@@ -15,7 +29,10 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:4000
+      - NEXT_PUBLIC_API_URL=http://krindale.com:4000
     depends_on:
       - backend
     restart: always
+
+volumes:
+  postgres_data:

@@ -1,6 +1,9 @@
 # Build stage
 FROM node:18-alpine AS builder
 
+# Install OpenSSL for Prisma
+RUN apk add --no-cache openssl
+
 WORKDIR /app
 
 COPY package*.json ./
@@ -19,6 +22,9 @@ RUN npx prisma generate
 
 FROM node:18-alpine
 
+# Install OpenSSL for Prisma
+RUN apk add --no-cache openssl
+
 WORKDIR /app
 
 COPY --from=builder /app/node_modules ./node_modules
@@ -33,4 +39,4 @@ RUN npm install -g tsx
 EXPOSE 4000
 
 # Script to run migrations and then start the server
-CMD npx prisma migrate deploy && tsx src/index.ts
+CMD npx prisma db push && tsx src/index.ts

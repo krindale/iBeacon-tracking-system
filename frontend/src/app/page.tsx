@@ -59,7 +59,7 @@ export default function DashboardPage() {
 
     const statusInterval = setInterval(fetchSystemStatus, 3000); // 3 seconds
 
-    const socket = io('http://localhost:4000');
+    const socket = io(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000');
 
     socket.on('update_users', () => {
       console.log('Real-time update received');
@@ -176,7 +176,7 @@ export default function DashboardPage() {
                 <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden">
                   <div
                     className={`h-full transition-all duration-500 rounded-full ${(systemStatus?.memory.heapPercent || 0) > 80 ? 'bg-red-500' :
-                        (systemStatus?.memory.heapPercent || 0) > 60 ? 'bg-amber-500' : 'bg-purple-500'
+                      (systemStatus?.memory.heapPercent || 0) > 60 ? 'bg-amber-500' : 'bg-purple-500'
                       }`}
                     style={{ width: `${systemStatus?.memory.heapPercent || 0}%` }}
                   />

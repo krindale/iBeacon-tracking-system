@@ -31,6 +31,11 @@ io.on('connection', (socket) => {
 
 const PORT = process.env.PORT || 4000;
 
+// Health check endpoint for AWS
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
 // 6. GET /api/admin/system/status - Get system resource usage
 app.get('/api/admin/system/status', (req, res) => {
     try {
