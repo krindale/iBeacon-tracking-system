@@ -29,6 +29,14 @@ yarn-error.log*
 *.db
 *.db-journal
 
+# Database
+backend/data/*.db
+backend/data/*.db-journal
+ibeacon_prod_backup.sql
+
+# Production Secrets
+ibeacon-key.pem
+
 # OS
 .DS_Store
 
