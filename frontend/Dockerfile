@@ -1,6 +1,9 @@
 # Build stage
 FROM node:18-alpine AS builder
 
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+
 WORKDIR /app
 
 COPY package*.json ./
@@ -22,6 +25,7 @@ WORKDIR /app
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
 ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
 COPY --from=builder /app/next.config.mjs ./
 COPY --from=builder /app/public ./public
