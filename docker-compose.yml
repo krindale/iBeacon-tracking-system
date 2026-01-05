@@ -29,7 +29,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=http://krindale.com:4000
+      - NEXT_PUBLIC_API_URL=http://15.165.169.154:4000
     depends_on:
       - backend
     restart: always
