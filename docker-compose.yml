@@ -28,10 +28,10 @@ services:
     build:
       context: ./frontend
       args:
-        - NEXT_PUBLIC_API_URL=https://krindale.com
+        - NEXT_PUBLIC_API_URL=https://ibeacon.krindale.com
     # ports: - removed to use nginx
     environment:
-      - NEXT_PUBLIC_API_URL=https://krindale.com
+      - NEXT_PUBLIC_API_URL=https://ibeacon.krindale.com
     depends_on:
       - backend
     restart: always
