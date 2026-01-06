@@ -183,7 +183,7 @@ async function logApiCall(data: {
 
 /**
  * @swagger
- * /external/beacons:
+ * /api/external/beacons:
  *   get:
  *     summary: Get list of registered beacons
  *     description: 등록된 모든 iBeacon 목록을 조회합니다. 모바일 앱에서 비콘 매칭에 사용합니다.
@@ -245,7 +245,7 @@ app.get('/api/external/beacons', async (req, res) => {
 
 /**
  * @swagger
- * /users:
+ * /api/users:
  *   post:
  *     summary: Register a new user
  *     description: |
@@ -384,7 +384,7 @@ app.post('/api/users', async (req, res) => {
 
 /**
  * @swagger
- * /locations/report:
+ * /api/locations/report:
  *   post:
  *     summary: Report current location
  *     description: |
