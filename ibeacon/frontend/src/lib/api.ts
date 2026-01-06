@@ -1,4 +1,5 @@
-const API_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api`;
+// API Gateway: api.krindale.com/ibeacon routes to backend /api
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
 
 export interface UserStatus {
     nickname: string;

@@ -1,15 +1,40 @@
+# ============================================
+# Multi-Project Docker Compose Configuration
+# ============================================
+#
+# 구조:
+#   - 공유: nginx, db (PostgreSQL), certbot
+#   - 프로젝트별: frontend, backend 컨테이너
+#
+# 디렉토리 구조:
+#   localserver/
+#   ├── ibeacon/
+#   │   ├── frontend/
+#   │   └── backend/
+#   ├── project2/           # 새 프로젝트 추가 시
+#   │   ├── frontend/
+#   │   └── backend/
+#   ├── nginx.conf
+#   └── docker-compose.yml
+# ============================================
+
 services:
-  backend:
-    build: ./backend
+  # ============================================
+  # Shared Infrastructure
+  # ============================================
+
+  nginx:
+    image: nginx:alpine
     ports:
-      - "4000:4000"
+      - "80:80"
+      - "443:443"
     volumes:
-      - ./backend/data:/app/data
-    environment:
-      - DATABASE_URL=postgresql://ibeacon:password@db:5432/ibeacon_db
-      - PORT=4000
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
     depends_on:
-      - db
+      - ibeacon-frontend
+      - ibeacon-backend
     restart: always
 
   db:
@@ -22,32 +47,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    restart: always
-
-  frontend:
-    build:
-      context: ./frontend
-      args:
-        - NEXT_PUBLIC_API_URL=https://ibeacon.krindale.com
-    # ports: - removed to use nginx
-    environment:
-      - NEXT_PUBLIC_API_URL=https://ibeacon.krindale.com
-    depends_on:
-      - backend
-    restart: always
-
-  nginx:
-    image: nginx:alpine
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
-    depends_on:
-      - frontend
-      - backend
+      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh:ro
     restart: always
 
   certbot:
@@ -56,6 +56,58 @@ services:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+  # ============================================
+  # iBeacon Project (./ibeacon/)
+  # ============================================
+
+  ibeacon-backend:
+    build: ./ibeacon/backend
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./ibeacon/backend/data:/app/data
+    environment:
+      - DATABASE_URL=postgresql://ibeacon:password@db:5432/ibeacon_db
+      - PORT=4000
+    depends_on:
+      - db
+    restart: always
+
+  ibeacon-frontend:
+    build:
+      context: ./ibeacon/frontend
+      args:
+        - NEXT_PUBLIC_API_URL=https://api.krindale.com/ibeacon
+    environment:
+      - NEXT_PUBLIC_API_URL=https://api.krindale.com/ibeacon
+    depends_on:
+      - ibeacon-backend
+    restart: always
+  # ============================================
+  # Project 2 Template (./project2/)
+  # 새 프로젝트 추가 시 주석 해제
+  # ============================================
+  #
+  # project2-backend:
+  #   build: ./project2/backend
+  #   ports:
+  #     - "4001:4001"
+  #   environment:
+  #     - DATABASE_URL=postgresql://ibeacon:password@db:5432/project2_db
+  #     - PORT=4001
+  #   depends_on:
+  #     - db
+  #   restart: always
+  #
+  # project2-frontend:
+  #   build:
+  #     context: ./project2/frontend
+  #     args:
+  #       - NEXT_PUBLIC_API_URL=https://api.krindale.com/project2
+  #   depends_on:
+  #     - project2-backend
+  #   restart: always
 
 volumes:
   postgres_data:
