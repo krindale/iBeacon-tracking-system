@@ -196,7 +196,10 @@ export default function HistoryPage() {
     };
 
     useEffect(() => {
-        const socketUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+        // Socket.io connects directly to ibeacon.krindale.com (not through API gateway)
+        const socketUrl = typeof window !== 'undefined'
+            ? (window.location.hostname === 'localhost' ? 'http://localhost:4000' : 'https://ibeacon.krindale.com')
+            : 'http://localhost:4000';
         console.log(`Connecting to socket at ${socketUrl} for user ${nickname}`);
         const socket = io(socketUrl);
 

@@ -59,7 +59,11 @@ export default function DashboardPage() {
 
     const statusInterval = setInterval(fetchSystemStatus, 3000); // 3 seconds
 
-    const socket = io(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000');
+    // Socket.io connects directly to ibeacon.krindale.com (not through API gateway)
+    const socketUrl = typeof window !== 'undefined'
+      ? (window.location.hostname === 'localhost' ? 'http://localhost:4000' : 'https://ibeacon.krindale.com')
+      : 'http://localhost:4000';
+    const socket = io(socketUrl);
 
     socket.on('update_users', () => {
       console.log('Real-time update received');
