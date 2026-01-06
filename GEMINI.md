@@ -166,12 +166,18 @@ sudo docker exec ibeacon-tracking-system-db-1 pg_dump -U ibeacon ibeacon_db > ba
 
 ## 📡 iBeacon API 엔드포인트
 
+### 모바일 앱용 (/api/ 포함)
 | 엔드포인트 | 용도 |
 |------------|------|
-| `api.krindale.com/ibeacon/external/beacons` | 비콘 목록 조회 |
-| `api.krindale.com/ibeacon/users` | 사용자 등록 |
-| `api.krindale.com/ibeacon/locations/report` | 위치 보고 |
+| `api.krindale.com/ibeacon/api/external/beacons` | 비콘 목록 조회 |
+| `api.krindale.com/ibeacon/api/users` | 사용자 등록 |
+| `api.krindale.com/ibeacon/api/locations/report` | 위치 보고 |
+
+### 대시보드용
+| 엔드포인트 | 용도 |
+|------------|------|
 | `api.krindale.com/ibeacon/admin/*` | 관리자 API |
+| `api.krindale.com/ibeacon/docs/` | Swagger API 문서 |
 
 ---
 
@@ -190,6 +196,9 @@ sudo docker exec ibeacon-tracking-system-db-1 pg_dump -U ibeacon ibeacon_db > ba
 ## 🤖 에이전트 가이드
 
 1. **새 프로젝트 추가 시** 위의 6단계 순서대로 진행
-2. **API 호출 변경**: 기존 `ibeacon.krindale.com/api` → `api.krindale.com/ibeacon`
-3. **Docker 빌드** 시 RAM 제약으로 시간 소요 예상
-4. **DNS 변경** 시 Route 53에서 A 레코드 추가 후 최대 5분 전파 대기
+2. **모바일 API 경로**: `/ibeacon/api/*` (모바일 앱이 `/api/` 포함)
+3. **대시보드 API 경로**: `/ibeacon/*`
+4. **Swagger 문서**: https://api.krindale.com/ibeacon/docs/
+5. **Docker 빌드** 시 RAM 제약으로 시간 소요 예상
+6. **DNS 변경** 시 Route 53에서 A 레코드 추가 후 최대 5분 전파 대기
+7. **CORS**: nginx에서 OPTIONS preflight 처리 (모바일 앱은 영향 없음)

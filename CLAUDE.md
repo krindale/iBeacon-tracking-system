@@ -104,8 +104,9 @@ npm run dev          # 개발 서버 (Port 3000)
 
 - [ ] **Auth**: Admin 대시보드 JWT/Session 인증
 - [ ] **Charts**: 방문 빈도 시각화 (Recharts)
-- [ ] **API Docs**: Swagger/OpenAPI 자동 생성
+- [x] **API Docs**: Swagger/OpenAPI 자동 생성 → https://api.krindale.com/ibeacon/docs/
 - [ ] **Testing**: Jest + React Testing Library 도입
+- [ ] **CI/CD**: GitHub Actions 자동 배포
 
 ---
 
@@ -113,10 +114,13 @@ npm run dev          # 개발 서버 (Port 3000)
 
 1. **실시간 업데이트 테스트**:
    ```bash
-   curl -X POST https://api.krindale.com/ibeacon/locations/report \
+   # 모바일 앱 경로 (/api/ 포함)
+   curl -X POST https://api.krindale.com/ibeacon/api/locations/report \
      -H "Content-Type: application/json" \
-     -d '{"nickName":"테스트","beaconUuid":"test-uuid","beaconMajor":"1","beaconMinor":"1"}'
+     -d '{"nickName":"테스트","beaconUuid":"test-uuid","beaconMajor":"1","beaconMinor":"1","timeStamp":"2026-01-01T00:00:00Z"}'
    ```
+
+2. **Swagger API 문서**: https://api.krindale.com/ibeacon/docs/
 
 2. **비콘 데이터 수정**: `ibeacon/backend/prisma/seed.ts` 수정 → `npm run seed`
 
