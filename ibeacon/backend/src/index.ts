@@ -1,4 +1,6 @@
 import 'dotenv/config';
+import * as Sentry from "@sentry/node";
+import { nodeProfilingIntegration } from "@sentry/profiling-node";
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import cors from 'cors';
@@ -8,6 +10,18 @@ import os from 'os';
 import v8 from 'v8';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './swagger.js';
+
+Sentry.init({
+  dsn: "https://7d1461f03c4a5fdbc27abd74df5b01eb@o4510667431477248.ingest.us.sentry.io/4510667477417984",
+  integrations: [
+    nodeProfilingIntegration(),
+  ],
+  // Tracing
+  tracesSampleRate: 1.0, //  Capture 100% of the transactions
+
+  // Set sampling rate for profiling - this is relative to tracesSampleRate
+  profilesSampleRate: 1.0,
+});
 
 const prisma = new PrismaClient();
 const app = express();
@@ -876,6 +890,9 @@ app.delete('/api/admin/users/:nickname', async (req, res) => {
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
+
+// The Sentry error handler must be before any other error middleware and after all controllers
+Sentry.setupExpressErrorHandler(app);
 
 httpServer.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
