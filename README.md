@@ -44,7 +44,7 @@
 
 ### 1. 백엔드 설정
 ```bash
-cd backend
+cd ibeacon/backend
 npm install
 # DB 마이그레이션 및 초기 비콘 데이터 시딩
 npx prisma migrate dev --name init
@@ -55,7 +55,7 @@ npm run dev
 
 ### 2. 프론트엔드 설정
 ```bash
-cd frontend
+cd ibeacon/frontend
 npm install
 # 개발 서버 실행 (기본 3000 포트)
 npm run dev
