@@ -310,18 +310,18 @@ export default function HistoryPage() {
             </header>
 
             <main className="flex-1 container mx-auto px-4 py-8 flex gap-6 relative">
-                <div className={`flex-1 transition-all duration-300 ${showLogDetails ? 'mr-[400px]' : ''}`}>
+                <div className={`flex-1 transition-all duration-300 ${showLogDetails ? 'md:mr-[400px]' : ''}`}>
                     <Card className="shadow-sm overflow-hidden border-slate-200 dark:border-slate-800">
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 bg-white dark:bg-slate-900 border-b">
+                        <CardHeader className="flex flex-col md:flex-row items-start md:items-center justify-between space-y-4 md:space-y-0 pb-4 bg-white dark:bg-slate-900 border-b">
                             <div>
                                 <CardTitle className="text-lg">Activity for {selectedDate || '...'}</CardTitle>
                                 <CardDescription>
                                     Found <strong>{totalItems}</strong> events on this day
                                 </CardDescription>
                             </div>
-                            <div className="flex items-center gap-2">
-                                <span className="text-xs text-muted-foreground mr-2 font-medium">Select Date:</span>
-                                <div className="flex items-center border rounded-md p-1 bg-slate-50 dark:bg-slate-950">
+                            <div className="flex items-center gap-2 w-full md:w-auto">
+                                <span className="text-xs text-muted-foreground mr-1 font-medium hidden sm:block">Select Date:</span>
+                                <div className="flex items-center border rounded-md p-1 bg-slate-50 dark:bg-slate-950 w-full md:w-auto justify-between">
                                     <Button
                                         variant="ghost"
                                         size="icon"
@@ -401,8 +401,8 @@ export default function HistoryPage() {
                                                                 {/* Group Header */}
                                                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                                                     <div className="space-y-1">
-                                                                        <div className="flex items-center gap-2 font-semibold text-lg">
-                                                                            <MapPin className={`h-4 w-4 ${bg.alias === 'Disconnected' ? 'text-slate-400' : 'text-blue-500'}`} />
+                                                                        <div className="flex items-center gap-1.5 font-semibold text-base sm:text-lg">
+                                                                            <MapPin className={`h-4 w-4 shrink-0 ${bg.alias === 'Disconnected' ? 'text-slate-400' : 'text-blue-500'}`} />
                                                                             {bg.alias}
                                                                             {hasMultiple && !isExpanded && (
                                                                                 <Badge variant="secondary" className="text-[10px] py-0 px-2 h-5 bg-blue-50 text-blue-600 border-blue-100">
@@ -488,12 +488,12 @@ export default function HistoryPage() {
                     </Card>
                 </div>
 
-                {/* API Logs Sidebar */}
+                {/* API Logs Sidebar - Responsive Drawer/Sidebar */}
                 <aside
-                    className={`fixed right-0 top-16 bottom-0 w-[400px] border-l bg-white dark:bg-slate-950 shadow-2xl transition-transform duration-300 z-20 ${showLogDetails ? 'translate-x-0' : 'translate-x-full'}`}
+                    className={`fixed right-0 top-0 md:top-16 bottom-0 w-full md:w-[400px] border-l bg-white dark:bg-slate-950 shadow-2xl transition-transform duration-300 z-50 md:z-20 ${showLogDetails ? 'translate-x-0' : 'translate-x-full'}`}
                 >
-                    <div className="flex items-center justify-between p-4 border-b">
-                        <h2 className="font-bold flex items-center gap-2">
+                    <div className="flex items-center justify-between p-4 border-b h-16">
+                        <h2 className="font-bold flex items-center gap-2 text-sm sm:text-base">
                             <Terminal className="h-5 w-5 text-blue-500" />
                             API Communication Details
                         </h2>
@@ -502,7 +502,7 @@ export default function HistoryPage() {
                         </Button>
                     </div>
 
-                    <ScrollArea className="h-[calc(100vh-120px)]">
+                    <ScrollArea className="h-[calc(100vh-64px)] md:h-[calc(100vh-120px)]">
                         <div className="p-4 space-y-6">
                             {loadingLog ? (
                                 <div className="space-y-4 animate-pulse">

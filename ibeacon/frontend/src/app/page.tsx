@@ -13,14 +13,16 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { RefreshCcw, Users, History as HistoryIcon, MapPin, Trash2, Server, Cpu, HardDrive, Activity, Clock } from 'lucide-react';
+import { RefreshCcw, Users, History as HistoryIcon, MapPin, Trash2, Server, Cpu, HardDrive, Activity, Clock, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { io } from 'socket.io-client';
 
 export default function DashboardPage() {
   const [users, setUsers] = useState<UserStatus[]>([]);
   const [loading, setLoading] = useState(true);
   const [systemStatus, setSystemStatus] = useState<SystemStatus | null>(null);
+  const router = useRouter();
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -234,59 +236,115 @@ export default function DashboardPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Nickname</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Current Location</TableHead>
-                    <TableHead>Last Seen</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {users.map((user) => (
-                    <TableRow key={user.deviceUuid}>
-                      <TableCell className="font-medium">{user.nickname}</TableCell>
-                      <TableCell>
-                        <Badge variant={user.status === 'Active' ? 'default' : 'secondary'}>
+              {/* Mobile View: Cards */}
+              <div className="md:hidden space-y-4">
+                {users.map((user) => (
+                  <div
+                    key={user.deviceUuid}
+                    className="p-4 border rounded-lg bg-white dark:bg-slate-900 shadow-sm active:bg-slate-50 dark:active:bg-slate-800 transition-colors flex items-center justify-between gap-4"
+                    onClick={() => router.push(`/history/${user.nickname}`)}
+                  >
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-bold truncate">{user.nickname}</span>
+                        <Badge variant={user.status === 'Active' ? 'default' : 'secondary'} className="text-[10px] h-4">
                           {user.status}
                         </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <MapPin className="h-4 w-4 text-blue-500" />
-                          {user.currentBeacon}
-                        </div>
-                      </TableCell>
-                      <TableCell>{new Date(user.lastSeen).toLocaleString()}</TableCell>
-                      <TableCell className="text-right">
-                        <Link href={`/history/${user.nickname}`}>
-                          <Button variant="ghost" size="sm">
-                            <HistoryIcon className="mr-2 h-4 w-4" />
-                            History
-                          </Button>
-                        </Link>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                          onClick={() => handleDeleteUser(user.nickname)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                  {users.length === 0 && !loading && (
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
+                        <MapPin className="h-3 w-3 text-blue-500 shrink-0" />
+                        <span className="truncate">{user.currentBeacon}</span>
+                      </div>
+                      <div className="text-[10px] text-muted-foreground">
+                        {new Date(user.lastSeen).toLocaleString()}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-red-500"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteUser(user.nickname);
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                      <ChevronRight className="h-5 w-5 text-slate-300" />
+                    </div>
+                  </div>
+                ))}
+                {users.length === 0 && !loading && (
+                  <div className="text-center py-12 text-muted-foreground border-2 border-dashed rounded-xl">
+                    No users connected yet.
+                  </div>
+                )}
+              </div>
+
+              {/* Desktop View: Table */}
+              <div className="hidden md:block">
+                <Table>
+                  <TableHeader>
                     <TableRow>
-                      <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
-                        No users connected yet.
-                      </TableCell>
+                      <TableHead>Nickname</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Current Location</TableHead>
+                      <TableHead>Last Seen</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
-                  )}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {users.map((user) => (
+                      <TableRow
+                        key={user.deviceUuid}
+                        className="cursor-pointer group"
+                        onClick={() => router.push(`/history/${user.nickname}`)}
+                      >
+                        <TableCell className="font-medium">{user.nickname}</TableCell>
+                        <TableCell>
+                          <Badge variant={user.status === 'Active' ? 'default' : 'secondary'}>
+                            {user.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <MapPin className="h-4 w-4 text-blue-500" />
+                            {user.currentBeacon}
+                          </div>
+                        </TableCell>
+                        <TableCell>{new Date(user.lastSeen).toLocaleString()}</TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-1">
+                            <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                              <HistoryIcon className="mr-2 h-4 w-4" />
+                              History
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteUser(user.nickname);
+                              }}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                    {users.length === 0 && !loading && (
+                      <TableRow>
+                        <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                          No users connected yet.
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
             </CardContent>
           </Card>
         </div>
